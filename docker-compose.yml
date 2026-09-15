@@ -1,0 +1,55 @@
+name: sequential-experimentation-engine
+
+networks:
+  redpanda_network:
+    driver: bridge
+
+volumes:
+  redpanda_data:
+
+services:
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v26.2.2
+    container_name: sequential-redpanda
+
+    command:
+      - redpanda
+      - start
+      - --smp
+      - "1"
+      - --memory
+      - 1G
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --kafka-addr
+      - internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr
+      - internal://redpanda:9092,external://localhost:19092
+
+    ports:
+      - "19092:19092"
+      - "19644:9644"
+
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+
+    networks:
+      - redpanda_network
+
+  console:
+    image: docker.redpanda.com/redpandadata/console:v3.11.0
+    container_name: sequential-redpanda-console
+
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - redpanda_network
+
+    depends_on:
+      - redpanda
