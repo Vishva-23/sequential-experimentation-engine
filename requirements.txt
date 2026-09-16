@@ -1,4 +1,5 @@
 colorama==0.4.6
+confluent-kafka==2.15.0
 contourpy==1.4.0
 cycler==0.12.1
 fonttools==4.65.0
@@ -14,6 +15,8 @@ pandas==3.0.5
 patsy==1.0.3
 pillow==12.3.0
 pluggy==1.6.0
+psycopg==3.3.5
+psycopg-binary==3.3.5
 Pygments==2.21.0
 pyparsing==3.3.2
 pytest==9.1.1

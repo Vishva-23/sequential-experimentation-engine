@@ -6,6 +6,7 @@ networks:
 
 volumes:
   redpanda_data:
+  postgres_data:
 
 services:
 
@@ -53,3 +54,31 @@ services:
 
     depends_on:
       - redpanda
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: sequential-postgres
+
+    environment:
+      POSTGRES_DB: experiments
+      POSTGRES_USER: experiment
+      POSTGRES_PASSWORD: experiment
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - redpanda_network
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U experiment -d experiments"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
